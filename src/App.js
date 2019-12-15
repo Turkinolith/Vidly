@@ -5,8 +5,8 @@ import Movies from "./components/movies";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/notFound";
-import NavBar from "./components/common/navbar";
 import LoginForm from "./components/loginForm";
+import NavBar from "./components/common/navbar";
 import "./App.css";
 
 class App extends Component {
