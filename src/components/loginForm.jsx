@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 class LoginForm extends Component {
+  state = {
+    account: { username: "", password: "" }
+  };
+
   handleSubmit = event => {
     event.preventDefault();
-
     // TODO: call the server, save the changes, and then redirect the user to a different page.
     console.log("Submitted");
+  };
+
+  handleChange = event => {
+    const account = { ...this.state.account };
+    account.username = event.currentTarget.value;
+    this.setState({ account });
   };
 
   render() {
@@ -16,6 +25,8 @@ class LoginForm extends Component {
             <label htmlFor="username">Username</label>
             <input
               autoFocus
+              value={this.state.account.username}
+              onChange={this.handleChange}
               id="username"
               type="text"
               className="form-control"
