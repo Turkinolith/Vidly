@@ -2,11 +2,19 @@ import React, { Component } from "react";
 import Input from "./common/input";
 class LoginForm extends Component {
   state = {
-    account: { username: "", password: "" }
+    account: { username: "", password: "" },
+    errors: {}
+  };
+
+  validate = () => {
+    return { username: "Username is required." };
   };
 
   handleSubmit = event => {
     event.preventDefault();
+
+    const errors = this.validate();
+    this.setState({ errors });
     // TODO: call the server, save the changes, and then redirect the user to a different page.
     console.log("Submitted");
   };
