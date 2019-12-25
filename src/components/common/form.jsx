@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Input from "./input";
 import Joi from "@hapi/joi";
-
+import Select from "./select";
 class Form extends Component {
   state = {
     data: {},
@@ -49,6 +49,7 @@ class Form extends Component {
   };
 
   renderButton(label) {
+    console.log("Form.jsx Render validate test:", this.validate());
     return (
       <button disabled={this.validate()} className="btn btn-primary">
         {label}
@@ -65,6 +66,21 @@ class Form extends Component {
         name={name}
         value={data[name]}
         label={label}
+        onChange={this.handleChange}
+        error={errors[name]}
+      />
+    );
+  }
+
+  renderSelect(name, label, options) {
+    const { data, errors } = this.state;
+
+    return (
+      <Select
+        name={name}
+        value={data[name]}
+        label={label}
+        options={options}
         onChange={this.handleChange}
         error={errors[name]}
       />
