@@ -49,7 +49,7 @@ class Form extends Component {
   };
 
   renderButton(label) {
-    console.log("Form.jsx Render validate test:", this.validate());
+    //console.log("Form.jsx Render validate test:", this.validate());
     return (
       <button disabled={this.validate()} className="btn btn-primary">
         {label}
