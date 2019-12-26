@@ -46,22 +46,23 @@ class MovieForm extends Form {
     const movie = getMovie(movieId);
     if (!movie) return this.props.history.replace("/not-found");
 
-    console.log(movie);
-    //this.setState({ data: this.mapToViewModel(movie)});
+    this.setState({ data: this.mapToViewModel(movie) });
   }
 
   mapToViewModel(movie) {
     return {
       _id: movie._id,
       title: movie.title,
-      genreId: movie.genreId._id,
+      genreId: movie.genre._id,
       numberInStock: movie.numberInStock,
       dailyRentalRate: movie.dailyRentalRate
     };
   }
 
-  //TODO: Finish doing form render
-  //TODO: Implement renderSelect
+  doSubmit = () => {
+    saveMovie(this.state.data);
+    this.props.history.push("/movies");
+  };
 
   render() {
     return (
@@ -70,6 +71,9 @@ class MovieForm extends Form {
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("title", "Title")}
           {this.renderSelect("genreId", "Genre", this.state.genres)}
+          {this.renderInput("numberInStock", "Number in Stock", "number")}
+          {this.renderInput("dailyRentalRate", "Rate")}
+          {this.renderButton("Save")}
         </form>
       </div>
     );

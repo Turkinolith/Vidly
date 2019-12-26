@@ -1,8 +1,10 @@
 import React from "react";
 
+//Note, the options for the select bar are passed into the function and are mapped out directly, the empty first option is hard-coded into the list.
+
 const Select = ({ name, label, options, error, ...rest }) => {
   return (
-    <div classname="form-group">
+    <div className="form-group">
       <label htmlFor={name}>{label}</label>
       <select name={name} id={name} {...rest} className="form-control">
         <option value="" />
