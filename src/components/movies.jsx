@@ -14,7 +14,8 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     pageSize: 4,
-    sortColumn: { path: "title", order: "asc" }
+    sortColumn: { path: "title", order: "asc" },
+    filterStr: ""
   };
 
   componentDidMount() {
@@ -41,7 +42,12 @@ class Movies extends Component {
   };
 
   handleGenreSelect = genre => {
-    this.setState({ selectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, currentPage: 1, filterStr: "" });
+  };
+
+  handleFiltering = input => {
+    console.log("filtering: ", input);
+    this.setState({ selectedGenre: {}, currentPage: 1 });
   };
 
   handleSort = sortColumn => {
@@ -54,24 +60,36 @@ class Movies extends Component {
       currentPage,
       sortColumn,
       selectedGenre,
+      filterStr,
       movies: allMovies
     } = this.state;
 
+    //Added disabling of Genre filter if user inputs a search character
     const filtered =
-      selectedGenre && selectedGenre._id
+      selectedGenre && selectedGenre._id && !filterStr
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
         : allMovies;
 
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+    const filteredElements = filterStr
+      ? filtered.filter(e => e.title.toLowerCase().includes(filterStr))
+      : filtered;
+
+    //console.log( "Filtered Elements: ", filterStr  ? filtered.filter(e => e.title.toLowerCase().includes(filterStr)) : filtered);
+
+    const sorted = _.orderBy(
+      filteredElements,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
 
     const movies = paginate(sorted, currentPage, pageSize);
 
-    return { totalCount: filtered.length, data: movies };
+    return { totalCount: filteredElements.length, data: movies };
   };
 
   render() {
     const { length: count } = this.state.movies;
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const { pageSize, currentPage, sortColumn, filterStr } = this.state;
 
     if (count === 0) return <p>There are no movies in the database.</p>;
 
@@ -84,6 +102,7 @@ class Movies extends Component {
             items={this.state.genres}
             selectedItem={this.state.selectedGenre}
             onItemSelect={this.handleGenreSelect}
+            strFilter={filterStr}
           />
         </div>
         <div className="col">
@@ -91,6 +110,14 @@ class Movies extends Component {
             New Movie
           </Link>
           <p>Showing {totalCount} movies in the database.</p>
+          <input
+            type="text"
+            value={filterStr}
+            onChange={e => {
+              this.handleFiltering(e.target.value);
+              this.setState({ filterStr: e.target.value });
+            }}
+          />
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
