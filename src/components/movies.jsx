@@ -20,6 +20,8 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" }
   };
 
+  //Note: selectedGenre doesn't have to be explicitly defined in state, but its there so things are easier to read.
+
   componentDidMount() {
     const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
 
