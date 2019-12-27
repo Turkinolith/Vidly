@@ -113,6 +113,7 @@ class Movies extends Component {
           <input
             type="text"
             value={filterStr}
+            placeholder="Search..."
             onChange={e => {
               this.handleFiltering(e.target.value);
               this.setState({ filterStr: e.target.value });
