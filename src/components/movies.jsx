@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { toast } from "react-toastify";
+import { getRealGenres } from "../services/genreService";
+import { getRealMovies, deleteMovie } from "./../services/movieService.";
 import MoviesTable from "./moviesTable";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import { Link } from "react-router-dom";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+//import { getGenres } from "../services/fakeGenreService";
 import { paginate } from "../utils/paginate";
 import _ from "lodash";
 import SearchBox from "./SearchBox";
@@ -22,17 +24,29 @@ class Movies extends Component {
 
   //Note: selectedGenre doesn't have to be explicitly defined in state, but its there so things are easier to read.
 
-  componentDidMount() {
-    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
+  async componentDidMount() {
+    const { data } = await getRealGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...data];
 
-    this.setState({ movies: getMovies(), genres });
+    // this.setState({ movies: getMovies(), genres }); ** Old Original value
+    // const movies = (await getRealMovies()).data;  **Instead lets use destructuring so this doesn't read so lame.
+    const { data: movies } = await getRealMovies(); // New Value
+    this.setState({ movies, genres });
   }
-
-  handleDelete = movie => {
-    const movies = this.state.movies.filter(m => m._id !== movie._id);
+  // HandleDelete was previously an optimisic update, since this will work with a real backend now
+  // I need a backup in case things fail to undo the change.
+  handleDelete = async movie => {
+    const originalMovies = this.state.movies;
+    const movies = originalMovies.filter(m => m._id !== movie._id);
     this.setState({ movies });
 
-    deleteMovie(movie._id);
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        toast.error("This movie has already been deleted.");
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLike = movie => {
