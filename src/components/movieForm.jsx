@@ -46,7 +46,7 @@ class MovieForm extends Form {
       const movieId = this.props.match.params.id;
       if (movieId === "new") return;
 
-      const movie = await getRealMovie(movieId);
+      const { data: movie } = await getRealMovie(movieId);
       this.setState({ data: this.mapToViewModel(movie) });
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
